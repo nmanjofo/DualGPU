@@ -5,7 +5,9 @@
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h> 
-#include <assimp/scene.h> 
+#include <assimp/scene.h>
+
+#include <IL\il.h>
 
 //TOTO do globalnej klasy
 #include <string>
@@ -27,7 +29,6 @@ public:
 	SceneGraph*	loadSceneGraphFromFiles(std::vector<std::wstring> paths, MaterialManager* manager);
 
 protected:
-
 	//Goes through scene hierarchy
 	//Builds scene graph, but does not add geometry
 	//Calculates references for each leaf, in order to handle instancing
@@ -38,12 +39,19 @@ protected:
 	//Returns false if anything goes wrong
 	bool  _processMeshes(const aiMesh** meshes, unsigned int count);
 
+	//Loads materials from file
+	//Creates also raw textures
+	//Respects original order of materials from Assimp
+	bool _processMaterialsAndRawTextures(const aiMaterial** materials, unsigned int numMaterials, bool loadTextures, MaterialManager* manager);
+
+
+	void _printILErrorString(ILenum error);
 	//Loads an array of aiVector3D into a linear array
 	//Array is allocated
 	//The vertices are loaded and then expanded if necessary (vec3->vec4 f.e.)
 	//Expand value is copied to expand components
 	//Returns nullptr if something goes wrong
-	//VEC_T is a vector type, needs [] operator
+	//VEC_T is a vector type supporting [] operator
 	template <typename T, typename VEC_T>
 	T*	_loadVectors(VEC_T* vertices, unsigned int vecTypeLength, unsigned int vectorCount, unsigned int expandTo, T	expandValue)
 	{

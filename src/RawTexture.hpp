@@ -2,14 +2,17 @@
 
 #include "RawTypes.hpp"
 
-namespace RawTexture
+namespace RawTexture2D
 {
 	enum class TextureType
 	{
-		Color,
+		Ambient,
+		Diffuse,
+		Specular,
 		Displacement,
 		Normal,
 		Bump,
+		Lightmap,
 	};
 
 	typedef struct
@@ -20,5 +23,6 @@ namespace RawTexture
 		unsigned int	numVectorComponents;
 		ElementDataType componentType;
 		float			blend;
+		std::string		name;
 	} RawTextureData;
 }

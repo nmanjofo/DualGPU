@@ -9,7 +9,7 @@ class MaterialManager
 public:
 	//Adds a material with raw data
 
-	unsigned int addMaterial();
+	unsigned int addMaterial(Material* material);
 	const Material* getMaterial(unsigned int index) const;
 
 protected:

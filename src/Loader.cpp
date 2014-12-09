@@ -2,7 +2,7 @@
 
 Loader::Loader()
 {
-
+	
 }
 
 
@@ -53,6 +53,7 @@ SceneGraph* Loader::loadSceneGraphFromFile(std::wstring pathw, MaterialManager* 
 
 	//Create hierarchy, count references
 	root = _processHierarchyRecursive(scene, _meshReferenceCounter, scene->mRootNode, nullptr);
+
 
 
 	//clean Assimp
@@ -118,9 +119,8 @@ bool  Loader::_processMeshes(const aiMesh** meshes, const unsigned int count)
 		RawMesh * data = new RawMesh();
 
 		leaf->setRawData(data);
-		leaf->setName(meshes[i]->mName.C_Str());
-		
-		//MATERIAL INDEX! nejak to sem treba dolepit
+		leaf->setName(mesh->mName.C_Str());
+		leaf->setMaterialID(mesh->mMaterialIndex);
 
 		//Get positions
 		RawMesh::RawBuffer* positions = new RawMesh::RawBuffer;
@@ -145,7 +145,6 @@ bool  Loader::_processMeshes(const aiMesh** meshes, const unsigned int count)
 			indices->elemType = ElementDataType::UINT;
 			indices->elemCountPerVector = 1;
 			
-			//ZLUCIT VSETKY FACES???
 			//Merge all faces to one buffer
 			//Get count of all faces
 			unsigned int numFaces = 0;
@@ -169,7 +168,7 @@ bool  Loader::_processMeshes(const aiMesh** meshes, const unsigned int count)
 		}
 
 		//Get texcoord
-		if (mesh->HasTextureCoords())
+		if (mesh->HasTextureCoords(0))
 		{
 			RawMesh::RawBuffer* texcoords = new RawMesh::RawBuffer;
 			texcoords->elemType = ElementDataType::FLOAT;
@@ -264,4 +263,202 @@ bool  Loader::_processMeshes(const aiMesh** meshes, const unsigned int count)
 	}//loop through meshes
 
 	return true;
+}
+
+bool Loader::_processMaterialsAndRawTextures(const aiMaterial** materials, unsigned int numMaterials, bool loadTextures, MaterialManager* manager)
+{
+	if (materials == nullptr || manager == nullptr)
+	{
+		return false;
+	}
+
+	if (numMaterials == 0)
+		return true;
+
+	for (unsigned int i = 0; i < numMaterials; ++i)
+	{
+		Material * material = new Material;
+
+		//Name
+		aiString name;
+		materials[i]->Get(AI_MATKEY_NAME, name);
+
+		typedef std::codecvt_utf8<wchar_t> convert_type;
+		std::wstring_convert<convert_type, wchar_t> converter;
+
+		material->setName(converter.from_bytes(name.C_Str()));
+
+		//Ambient color
+		aiColor3D color;
+		XMFLOAT3A colorA;
+		materials[i]->Get(AI_MATKEY_COLOR_AMBIENT, color);
+
+		colorA.x = color[0];
+		colorA.y = color[1];
+		colorA.z = color[2];
+
+		material->setAmbientColor(colorA);
+
+		//Diffuse color
+		materials[i]->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+
+		colorA.x = color[0];
+		colorA.y = color[1];
+		colorA.z = color[2];
+
+		material->setDiffuseColor(colorA);
+
+		//Specular color
+		materials[i]->Get(AI_MATKEY_COLOR_SPECULAR, color);
+
+		colorA.x = color[0];
+		colorA.y = color[1];
+		colorA.z = color[2];
+
+		material->setSpecularColor(colorA);
+
+		//Shininess
+		float shininess;
+
+		materials[i]->Get(AI_MATKEY_SHININESS, shininess);
+
+		material->setShininess(shininess);
+
+		//IsTwoSided, IsWireframe
+		int is;
+
+		materials[i]->Get(AI_MATKEY_ENABLE_WIREFRAME, is);
+		material->setIsWireframe(is != 0);
+
+		materials[i]->Get(AI_MATKEY_TWOSIDED, is);
+		material->setIsTwoSided(is != 0);
+
+		//Textures (raw)
+		if (loadTextures)
+		{
+			if (ilGetInteger(IL_VERSION_NUM) < IL_VERSION)
+			{
+				//Wrong DevIL version
+				std::wcerr << "Wrong DevIL version!\n";
+				return false;
+			}
+
+			ilInit();
+
+			//Diffuse textures
+			unsigned int numTextures = materials[i]->GetTextureCount(aiTextureType_DIFFUSE);
+
+			for (unsigned int j = 0; j < numTextures; ++j)
+			{
+				RawTexture2D::RawTextureData* texture = new RawTexture2D::RawTextureData;
+
+				//Open file
+				ILuint tex = ilGenImage();
+				ilBindImage(tex);
+
+				aiString path;
+				materials[i]->GetTexture(aiTextureType_DIFFUSE, j, &path);
+
+				typedef std::codecvt_utf8<wchar_t> convert_type;
+				std::wstring_convert<convert_type, wchar_t> converter;
+
+				bool success = ilLoadImage(converter.from_bytes(name.C_Str()).c_str());
+
+				if (!success)
+				{
+					_printILErrorString(ilGetError());
+					return false;
+				}
+
+				//Get dimensions
+				texture->dimX = ilGetInteger(IL_IMAGE_WIDTH);
+				texture->dimY = ilGetInteger(IL_IMAGE_HEIGHT);
+
+				//Get format
+				int format = ilGetInteger(IL_IMAGE_FORMAT);
+
+
+				//Get data
+				//TODO - EXTRA TESTING - treba spravne skopirovat!
+
+
+
+				material->addTexture(RawTexture2D::TextureType::Diffuse, texture);
+
+				ilDeleteImage(tex);
+			}
+		}
+
+		//Add material to manager
+		manager->addMaterial(material);
+	}
+
+	return true;
+}
+
+void Loader::_printILErrorString(ILenum error)
+{
+	switch (error)
+	{
+	case IL_NO_ERROR: 
+		return;
+	case IL_INVALID_ENUM:
+		std::cerr << "IL: Invalid Enum!\n";
+		return;
+	case IL_OUT_OF_MEMORY:
+		std::cerr << "IL: Out of memory!\n";
+		return;
+	case IL_FORMAT_NOT_SUPPORTED:
+		std::cerr << "IL: Format not supported!\n";
+		return;
+	case IL_INTERNAL_ERROR:
+		std::cerr << "IL: Internal error!\n";
+		return;
+	case IL_INVALID_VALUE:
+		std::cerr << "IL: Invalid value!\n";
+		return;
+	case IL_ILLEGAL_OPERATION:
+		std::cerr << "IL: Illegal operation!\n";
+		return;
+	case IL_ILLEGAL_FILE_VALUE:
+		std::cerr << "IL: Illegal value found in file! Possibly corrupted file?\n";
+		return;
+	case IL_INVALID_FILE_HEADER:
+		std::cerr << "IL: File header corrupted\n";
+		return;
+	case IL_INVALID_PARAM:
+		std::cerr << "IL: Invalid parameter!\n";
+		return;
+	case IL_COULD_NOT_OPEN_FILE:
+		std::cerr << "IL: Could not open specified file!\n";
+		return;
+	case IL_INVALID_EXTENSION:
+		std::cerr << "IL: Invalid file extension!\n";
+		return;
+	case IL_FILE_ALREADY_EXISTS:
+		std::cerr << "IL: File already exists!\n";
+		return;
+	case IL_OUT_FORMAT_SAME:
+		std::cerr << "IL: Conversion to the same format!\n";
+		return;
+	case IL_STACK_OVERFLOW:
+		std::cerr << "IL: Stack overflow!\n";
+		return;
+	case IL_STACK_UNDERFLOW:
+		std::cerr << "IL: Stack underflow!\n";
+		return;
+	case IL_INVALID_CONVERSION:
+		std::cerr << "IL: Invalid conversion!\n";
+		return;
+	case IL_LIB_JPEG_ERROR:
+		std::cerr << "IL: Error in libjpeg library!\n";
+		return;
+	case IL_LIB_PNG_ERROR:
+		std::cerr << "IL: Error in libpng library!\n";
+		return;
+	case IL_UNKNOWN_ERROR:
+	default:
+		std::cerr << "IL: Unknown error!\n";
+		return;
+	}
 }
