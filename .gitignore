@@ -56,4 +56,5 @@
 *.pidb
 *.svclog
 *.scc
+*.opensdf
 DxDualGPU.sdf
