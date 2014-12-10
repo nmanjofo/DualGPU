@@ -1,18 +1,29 @@
 #pragma once
 
-#include "Material.hpp"
+#include "RawMaterial.hpp"
 
-#include <vector>
+#include <map>
 
 class MaterialManager
 {
 public:
-	//Adds a material with raw data
+	static MaterialManager* getMaterialManager();
 
-	unsigned int addMaterial(Material* material);
-	const Material* getMaterial(unsigned int index) const;
+	//Adds a material with raw data
+	//Returns its index
+	unsigned int	addMaterial(RawMaterial* material);
+	const RawMaterial* getMaterialByIndex(unsigned int index) const;
+	const RawMaterial* getMaterialByName(const std::wstring& name) const;
+
+	void			deleteMaterialByIndex(unsigned int index);
+	void			deleteMaterialByName(const std::wstring& name);
+	void			deleteAll();
 
 protected:
-	std::vector<Material*> _materials;
+	MaterialManager();
 
+	std::map<unsigned int, RawMaterial*>	_materials;
+	unsigned int							_numStoredMaterials;
+
+	static MaterialManager*					_instance;
 };

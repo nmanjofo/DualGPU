@@ -9,20 +9,19 @@ namespace RawTexture2D
 		Ambient,
 		Diffuse,
 		Specular,
-		Displacement,
 		Normal,
-		Bump,
+		Emissive,
 		Lightmap,
+		Displacement,
 	};
 
 	typedef struct
 	{
 		void*			data;
-		unsigned int	dimX;
-		unsigned int	dimY;
-		unsigned int	numVectorComponents;
-		ElementDataType componentType;
-		float			blend;
-		std::string		name;
+		unsigned int	width;
+		unsigned int	height;
+		unsigned int	vectorComponentNum;
+		ElementDataType vectorComponentType;
+		std::wstring	name;
 	} RawTextureData;
 }

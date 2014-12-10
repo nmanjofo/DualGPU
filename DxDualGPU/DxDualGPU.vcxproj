@@ -177,7 +177,7 @@
     <ClInclude Include="..\src\IndirectIndexedDrawable.hpp" />
     <ClInclude Include="..\src\KMInputSingleton.h" />
     <ClInclude Include="..\src\Loader.hpp" />
-    <ClInclude Include="..\src\Material.hpp" />
+    <ClInclude Include="..\src\RawMaterial.hpp" />
     <ClInclude Include="..\src\MaterialManager.hpp" />
     <ClInclude Include="..\src\Node.hpp" />
     <ClInclude Include="..\src\RawMesh.hpp" />
@@ -203,11 +203,10 @@
     <ClCompile Include="..\src\KMInputSingleton.cpp" />
     <ClCompile Include="..\src\Loader.cpp" />
     <ClCompile Include="..\src\main.cpp" />
-    <ClCompile Include="..\src\Material.cpp" />
+    <ClCompile Include="..\src\RawMaterial.cpp" />
     <ClCompile Include="..\src\MaterialManager.cpp" />
     <ClCompile Include="..\src\Node.cpp" />
     <ClCompile Include="..\src\RawMesh.cpp" />
-    <ClCompile Include="..\src\RawTexture.cpp" />
     <ClCompile Include="..\src\SceneGraph.cpp" />
     <ClCompile Include="..\src\ResourceManager.cpp" />
     <ClCompile Include="..\src\ShaderCompiler.cpp" />

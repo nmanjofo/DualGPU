@@ -54,7 +54,15 @@ SceneGraph* Loader::loadSceneGraphFromFile(std::wstring pathw, MaterialManager* 
 	//Create hierarchy, count references
 	root = _processHierarchyRecursive(scene, _meshReferenceCounter, scene->mRootNode, nullptr);
 
-
+	//Process materials and textures
+	if (manager != nullptr)
+	{
+		if (_processMaterialsAndRawTextures(scene->mMaterials, scene->mNumMaterials, true, manager) == false)
+		{
+			//!!Cleanup
+			return nullptr;
+		}
+	}
 
 	//clean Assimp
 	importer->FreeScene();
@@ -277,7 +285,7 @@ bool Loader::_processMaterialsAndRawTextures(const aiMaterial** materials, unsig
 
 	for (unsigned int i = 0; i < numMaterials; ++i)
 	{
-		Material * material = new Material;
+		RawMaterial * material = new RawMaterial;
 
 		//Name
 		aiString name;
@@ -345,47 +353,108 @@ bool Loader::_processMaterialsAndRawTextures(const aiMaterial** materials, unsig
 
 			ilInit();
 
-			//Diffuse textures
-			unsigned int numTextures = materials[i]->GetTextureCount(aiTextureType_DIFFUSE);
+			const std::pair<aiTextureType, RawTexture2D::TextureType> textureTypes[] = 
+			{	
+				{ aiTextureType_AMBIENT, RawTexture2D::TextureType::Ambient },
+				{ aiTextureType_DIFFUSE, RawTexture2D::TextureType::Diffuse },
+				{ aiTextureType_SPECULAR, RawTexture2D::TextureType::Specular },
+				{ aiTextureType_EMISSIVE, RawTexture2D::TextureType::Emissive },
+				{ aiTextureType_NORMALS, RawTexture2D::TextureType::Normal }
+				{ aiTextureType_DISPLACEMENT, RawTexture2D::TextureType::Displacement }
+			};
 
-			for (unsigned int j = 0; j < numTextures; ++j)
+			const unsigned int textureTypesCount = sizeof(textureTypes) / sizeof(aiTextureType);
+			
+			//Iterate through texture types
+			for (unsigned int n = 0; n < textureTypesCount; ++n)
 			{
-				RawTexture2D::RawTextureData* texture = new RawTexture2D::RawTextureData;
+				unsigned int numTextures = materials[i]->GetTextureCount(textureTypes[n].first);
 
-				//Open file
-				ILuint tex = ilGenImage();
-				ilBindImage(tex);
-
-				aiString path;
-				materials[i]->GetTexture(aiTextureType_DIFFUSE, j, &path);
-
-				typedef std::codecvt_utf8<wchar_t> convert_type;
-				std::wstring_convert<convert_type, wchar_t> converter;
-
-				bool success = ilLoadImage(converter.from_bytes(name.C_Str()).c_str());
-
-				if (!success)
+				for (unsigned int j = 0; j < numTextures; ++j)
 				{
-					_printILErrorString(ilGetError());
-					return false;
+					RawTexture2D::RawTextureData* texture = new RawTexture2D::RawTextureData;
+
+					//Open file
+					ILuint tex = ilGenImage();
+					ilBindImage(tex);
+
+					aiString path;
+					materials[i]->GetTexture(textureTypes[n].first, j, &path);
+
+					//vyhodit do globalu
+					typedef std::codecvt_utf8<wchar_t> convert_type;
+					std::wstring_convert<convert_type, wchar_t> converter;
+
+					bool success = ilLoadImage(converter.from_bytes(name.C_Str()).c_str());
+
+					if (!success)
+					{
+						_printILErrorString(ilGetError());
+						return false;
+					}
+
+					//Get name (=path)
+					texture->name = converter.from_bytes(name.C_Str());
+
+					//Get dimensions
+					texture->width = ilGetInteger(IL_IMAGE_WIDTH);
+					texture->height = ilGetInteger(IL_IMAGE_HEIGHT);
+
+					//Get and process texture format
+					// get number of channels
+					texture->vectorComponentNum = ilGetInteger(IL_IMAGE_CHANNELS);
+
+					// get component type
+					int typeSize = ilGetInteger(IL_IMAGE_BYTES_PER_PIXEL) / ilGetInteger(IL_IMAGE_CHANNELS);
+
+					ILenum type;
+
+					switch (typeSize)
+					{
+					case sizeof(char) :
+						texture->vectorComponentType = ElementDataType::UBYTE;
+						type = IL_UNSIGNED_BYTE;
+						break;
+					case sizeof(short):
+						texture->vectorComponentType = ElementDataType::USHORT;
+						type = IL_UNSIGNED_SHORT;
+						break;
+					case sizeof(int) :
+						texture->vectorComponentType = ElementDataType::UINT;
+						type = IL_UNSIGNED_INT;
+						break;
+					default:
+						//Convert to ubyte
+						ilConvertImage(IL_RGB, IL_UNSIGNED_BYTE);
+						texture->vectorComponentType = ElementDataType::UBYTE;
+						texture->vectorComponentNum = 3;
+						type = IL_UNSIGNED_BYTE;
+						break;
+					}
+
+					// convert reversed formats
+					int format = ilGetInteger(IL_IMAGE_FORMAT);
+
+					if (format == IL_BGR)
+					{
+						ilConvertImage(IL_RGB, type);
+					}
+					else if (format == IL_BGRA)
+					{
+						ilConvertImage(IL_RGBA, type);
+					}
+
+					//Get data
+					//TODO - EXTRA TESTING - treba spravne skopirovat!
+					texture->data = new char[typeSize * ilGetInteger(IL_IMAGE_CHANNELS) * texture->width * texture->height];
+					ilCopyPixels(0, 0, 0, texture->width, texture->height, 1, ilGetInteger(IL_IMAGE_FORMAT), type, texture->data);
+
+					material->addTexture(textureTypes[n].second, texture);
+
+					ilDeleteImage(tex);
+
+					//TU skontrolovat, ci tam tie data naozaj su
 				}
-
-				//Get dimensions
-				texture->dimX = ilGetInteger(IL_IMAGE_WIDTH);
-				texture->dimY = ilGetInteger(IL_IMAGE_HEIGHT);
-
-				//Get format
-				int format = ilGetInteger(IL_IMAGE_FORMAT);
-
-
-				//Get data
-				//TODO - EXTRA TESTING - treba spravne skopirovat!
-
-
-
-				material->addTexture(RawTexture2D::TextureType::Diffuse, texture);
-
-				ilDeleteImage(tex);
 			}
 		}
 
