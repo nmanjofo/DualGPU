@@ -18,13 +18,13 @@ MaterialManager* MaterialManager::getMaterialManager()
 	return _instance;
 }
 
-unsigned int MaterialManager::addMaterial(Material* material)
+unsigned int MaterialManager::addMaterial(RawMaterial* material)
 {
 	_materials[_numStoredMaterials] = material;
 	++_numStoredMaterials;
 }
 
-const Material* MaterialManager::getMaterialByIndex(unsigned int index) const
+const RawMaterial* MaterialManager::getMaterialByIndex(unsigned int index) const
 {
 	try
 	{
@@ -36,7 +36,7 @@ const Material* MaterialManager::getMaterialByIndex(unsigned int index) const
 	}
 }
 
-const Material* MaterialManager::getMaterialByName(const std::wstring& name) const
+const RawMaterial* MaterialManager::getMaterialByName(const std::wstring& name) const
 {
 	auto it = _materials.begin();
 	const auto end = _materials.end();

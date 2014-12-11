@@ -170,6 +170,7 @@
     <ClInclude Include="..\src\BoundingVolume.hpp" />
     <ClInclude Include="..\src\Camera.h" />
     <ClInclude Include="..\src\Drawable.hpp" />
+    <ClInclude Include="..\src\Error.hpp" />
     <ClInclude Include="..\src\globals.h" />
     <ClInclude Include="..\src\LeafNode.hpp" />
     <ClInclude Include="..\src\GraphNode.hpp" />
@@ -196,6 +197,7 @@
     <ClCompile Include="..\src\BoundingVolume.cpp" />
     <ClCompile Include="..\src\Camera.cpp" />
     <ClCompile Include="..\src\Drawable.cpp" />
+    <ClCompile Include="..\src\Error.cpp" />
     <ClCompile Include="..\src\globals.cpp" />
     <ClCompile Include="..\src\LeafNode.cpp" />
     <ClCompile Include="..\src\GraphNode.cpp" />

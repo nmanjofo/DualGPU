@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Error.hpp"
 #include "SceneGraph.hpp"
 #include "MaterialManager.hpp"
 
@@ -19,7 +20,7 @@
 
 //TODO
 //dorobit flagy typu nacitat/nagenerovat normaly/tangenty atd
-class Loader
+class Loader : public Error
 {
 public:
 	Loader();
@@ -45,7 +46,7 @@ protected:
 	bool _processMaterialsAndRawTextures(const aiMaterial** materials, unsigned int numMaterials, bool loadTextures, MaterialManager* manager);
 
 
-	void _printILErrorString(ILenum error);
+	std::wstring _getILErrorString(ILenum error);
 	//Loads an array of aiVector3D into a linear array
 	//Array is allocated
 	//The vertices are loaded and then expanded if necessary (vec3->vec4 f.e.)

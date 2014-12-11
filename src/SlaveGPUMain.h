@@ -3,9 +3,9 @@
 #include <iostream>
 #include <string>
 #include "HRTimer.h"
-#include <cuda.h>
-#include <cuda_d3d11_interop.h>
-#include <cuda_runtime.h>
+//#include <cuda.h>
+//#include <cuda_d3d11_interop.h>
+//#include <cuda_runtime.h>
 
 #include "ThreadsDefines.h"
 #include <DirectXMath.h>

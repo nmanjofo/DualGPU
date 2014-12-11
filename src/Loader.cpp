@@ -196,7 +196,7 @@ bool  Loader::_processMeshes(const aiMesh** meshes, const unsigned int count)
 		}
 
 		//Get normals
-		if (mesh->HasNormals)
+		if (mesh->HasNormals())
 		{
 			RawMesh::RawBuffer* normals = new RawMesh::RawBuffer;
 			normals->elemType = ElementDataType::FLOAT;
@@ -347,7 +347,7 @@ bool Loader::_processMaterialsAndRawTextures(const aiMaterial** materials, unsig
 			if (ilGetInteger(IL_VERSION_NUM) < IL_VERSION)
 			{
 				//Wrong DevIL version
-				std::wcerr << "Wrong DevIL version!\n";
+				ErrorMessage(L"Wrong DevIL version!\n", Error::Severity::ERROR);
 				return false;
 			}
 
@@ -389,7 +389,7 @@ bool Loader::_processMaterialsAndRawTextures(const aiMaterial** materials, unsig
 
 					if (!success)
 					{
-						_printILErrorString(ilGetError());
+						ErrorMessage(_getILErrorString(ilGetError()));
 						return false;
 					}
 
@@ -465,69 +465,50 @@ bool Loader::_processMaterialsAndRawTextures(const aiMaterial** materials, unsig
 	return true;
 }
 
-void Loader::_printILErrorString(ILenum error)
+std::wstring Loader::_getILErrorString(ILenum error)
 {
 	switch (error)
 	{
 	case IL_NO_ERROR: 
-		return;
+		return L"";
 	case IL_INVALID_ENUM:
-		std::cerr << "IL: Invalid Enum!\n";
-		return;
+		return L"IL: Invalid Enum!\n";
 	case IL_OUT_OF_MEMORY:
-		std::cerr << "IL: Out of memory!\n";
-		return;
+		return L"IL: Out of memory!\n";
 	case IL_FORMAT_NOT_SUPPORTED:
-		std::cerr << "IL: Format not supported!\n";
-		return;
+		return L"IL: Format not supported!\n";
 	case IL_INTERNAL_ERROR:
-		std::cerr << "IL: Internal error!\n";
-		return;
+		return L"IL: Internal error!\n";
 	case IL_INVALID_VALUE:
-		std::cerr << "IL: Invalid value!\n";
-		return;
+		return L"IL: Invalid value!\n";
 	case IL_ILLEGAL_OPERATION:
-		std::cerr << "IL: Illegal operation!\n";
-		return;
+		return L"IL: Illegal operation!\n";
 	case IL_ILLEGAL_FILE_VALUE:
-		std::cerr << "IL: Illegal value found in file! Possibly corrupted file?\n";
-		return;
+		return L"IL: Illegal value found in file! Possibly corrupted file?\n";
 	case IL_INVALID_FILE_HEADER:
-		std::cerr << "IL: File header corrupted\n";
-		return;
+		return L"IL: File header corrupted\n";
 	case IL_INVALID_PARAM:
-		std::cerr << "IL: Invalid parameter!\n";
-		return;
+		return L"IL: Invalid parameter!\n";
 	case IL_COULD_NOT_OPEN_FILE:
-		std::cerr << "IL: Could not open specified file!\n";
-		return;
+		return L"IL: Could not open specified file!\n";
 	case IL_INVALID_EXTENSION:
-		std::cerr << "IL: Invalid file extension!\n";
-		return;
+		return L"IL: Invalid file extension!\n";
 	case IL_FILE_ALREADY_EXISTS:
-		std::cerr << "IL: File already exists!\n";
-		return;
+		return L"IL: File already exists!\n";
 	case IL_OUT_FORMAT_SAME:
-		std::cerr << "IL: Conversion to the same format!\n";
-		return;
+		return L"IL: Conversion to the same format!\n";
 	case IL_STACK_OVERFLOW:
-		std::cerr << "IL: Stack overflow!\n";
-		return;
+		return L"IL: Stack overflow!\n";
 	case IL_STACK_UNDERFLOW:
-		std::cerr << "IL: Stack underflow!\n";
-		return;
+		return L"IL: Stack underflow!\n";
 	case IL_INVALID_CONVERSION:
-		std::cerr << "IL: Invalid conversion!\n";
-		return;
+		return L"IL: Invalid conversion!\n";
 	case IL_LIB_JPEG_ERROR:
-		std::cerr << "IL: Error in libjpeg library!\n";
-		return;
+		return L"IL: Error in libjpeg library!\n";
 	case IL_LIB_PNG_ERROR:
-		std::cerr << "IL: Error in libpng library!\n";
-		return;
+		return L"IL: Error in libpng library!\n";
 	case IL_UNKNOWN_ERROR:
 	default:
-		std::cerr << "IL: Unknown error!\n";
-		return;
+		return L"IL: Unknown error!\n";
 	}
 }
