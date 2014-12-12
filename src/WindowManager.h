@@ -15,8 +15,6 @@ public:
 	void setIsWindowResizeable(bool isResizable);
 	bool getIsWindowResizable();
 
-	void setRedrawCallback();
-
 	void setTitle();
 
 	HWND getHandle();

@@ -157,7 +157,7 @@ const std::vector<RawTexture2D::RawTextureData*>& RawMaterial::getDiffuseTexture
 
 unsigned int RawMaterial::getNumOfDiffuseTextures() const
 {
-	return _diffuseTextures.size();
+	return static_cast<unsigned int>(_diffuseTextures.size());
 }
 
 

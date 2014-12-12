@@ -10,10 +10,6 @@
 
 #include <IL\il.h>
 
-//TOTO do globalnej klasy
-#include <string>
-#include <iostream>
-#include <codecvt>
 #include <vector>
 
 #define FLOATS_PER_POSITION 4
@@ -38,12 +34,12 @@ protected:
 	//Loads mesh raw data
 	//Fills in _meshReferenceCounter array, initializes it to zero
 	//Returns false if anything goes wrong
-	bool  _processMeshes(const aiMesh** meshes, unsigned int count);
+	bool  _processMeshes(aiMesh** const meshes, unsigned int count);
 
 	//Loads materials from file
 	//Creates also raw textures
 	//Respects original order of materials from Assimp
-	bool _processMaterialsAndRawTextures(const aiMaterial** materials, unsigned int numMaterials, bool loadTextures, MaterialManager* manager);
+	bool _processMaterialsAndRawTextures(aiMaterial** const materials, unsigned int numMaterials, bool loadTextures, MaterialManager* manager);
 
 
 	std::wstring _getILErrorString(ILenum error);
@@ -66,12 +62,15 @@ protected:
 			return nullptr;
 
 		//Keeping size & shrinking
-		if (expandTo =< vecTypeLength)
+		if (expandTo <= vecTypeLength)
 		{
 			for (unsigned int i = 0; i < vectorCount; ++i)
 			{
-				for (unsigned int j == 0; j<expandTo; ++j)
-					d++ = vertices[i][j];
+				for (unsigned int j = 0; j < expandTo; ++j)
+				{
+					*d = vertices[i][j];
+					d++;
+				}
 			}
 		}
 		//Expanding
@@ -79,13 +78,17 @@ protected:
 		{
 			for (unsigned int i = 0; i < vectorCount; ++i)
 			{
-				for (unsigned int j == 0; j<vecTypeLength; ++j)
-					d++ = vertices[i][j];
+				for (unsigned int j = 0; j < vecTypeLength; ++j)
+				{
+					*d = vertices[i][j];
+					d++;
+				}
 
 				const unsigned int diff = expandTo - vecTypeLength;
-				for (unsigned int j = 0 j < diff; ++j)
+				for (unsigned int j = 0; j < diff; ++j)
 				{
-					d++ = expandValue;
+					*d = expandValue;
+					d++;
 				}
 			}
 		}

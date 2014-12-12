@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Node.hpp"
+#include "LeafNode.hpp"
 #include "Animation.hpp"
 
 #include <vector>

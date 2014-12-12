@@ -20,8 +20,8 @@ public:
 	void			setMaterialID(unsigned int material);
 	unsigned int	getMaterialID();
 
-	void			setRawData(RawMeshData* data);
-	RawMeshData*	getRawData();
+	void			setRawData(RawMesh* data);
+	RawMesh*		getRawData();
 
 	//Adds instance to object
 	//Will contain updated transforms
@@ -32,9 +32,9 @@ protected:
 	//state set? mozno dany materialom
 
 	//Context-addressed drawables
-	std::map<void*, Drawable *>		_drawable; //Isto?
+	std::map<void*, Drawable *>		_drawable; //ASI pridat do ineho grafu
 
-	RawMeshData*					_rawData; //ak je instanciou, tak je to NULL
+	RawMesh*						_rawData; //ak je instanciou, tak je to NULL
 	unsigned int					_materialID;
 	
 	//Instance data

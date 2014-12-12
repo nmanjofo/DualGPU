@@ -31,6 +31,6 @@ public:
 
 protected:
 
-	enum DrawableType	_drawableType;
+	DrawableType		_drawableType;
 	bool				_isValid;
 };

@@ -6,7 +6,7 @@
 // Based on https://gist.github.com/donny-dont/1471329
 // and http://stackoverflow.com/questions/12942548/making-stdvector-allocate-aligned-memory
 
-enum class Alignment : size_t
+enum Alignment 
 {
 	Normal = sizeof(void*),
 	SSE = 16,
@@ -23,7 +23,7 @@ public:
 	typedef T&			reference;
 	typedef const T&	const_reference;
 	typedef T			value_type;
-	typedef std::size_t size_type;
+	typedef size_t		size_type;
 	typedef ptrdiff_t	difference_type;
 
 	T * address(T& r) const
@@ -36,7 +36,7 @@ public:
 		return &s;
 	}
 
-	std::size_t max_size() const noexcept
+	std::size_t max_size() const
 	{
 		// The following has been carefully written to be independent of
 		// the definition of size_t and to avoid signed/unsigned warnings.
@@ -47,7 +47,7 @@ public:
 	template <typename U>
 	struct rebind
 	{
-		typedef AlignedAllocator<U, Alignment> other;
+		typedef AlignedAllocator<U, Align> other;
 	};
 
 	bool operator!=(const AlignedAllocator& other) const
@@ -76,7 +76,7 @@ public:
 	// Empty for stateless allocators.
 	AlignedAllocator() { }
 	AlignedAllocator(const AlignedAllocator&) { }
-	template <typename U> AlignedAllocator(const AlignedAllocator<U, static_cast<size_t>Align>&) { }
+	template <typename U> AlignedAllocator(const AlignedAllocator<U, Align>&) { }
 	~AlignedAllocator() { }
 	
 	// The following will be different for each allocator.
@@ -90,7 +90,7 @@ public:
 		// All allocators can return NULL in this case.
 		if (n == 0) 
 		{
-			return NULL;
+			return nullptr;
 		}
 		// All allocators should contain an integer overflow check.
 		// The Standardization Committee recommends that std::length_error
@@ -100,9 +100,9 @@ public:
 			throw std::length_error("aligned_allocator<T>::allocate() - Integer overflow.");
 		}
 		// Mallocator wraps _mm_malloc().
-		void * const pv = _mm_malloc(n * sizeof(T), static_cast<size_t>Align);
+		void * const pv = _mm_malloc(n * sizeof(T), Align);
 		// Allocators should throw std::bad_alloc in the case of memory allocation failure.
-		if (pv == NULL)
+		if (pv == nullptr)
 		{
 			throw std::bad_alloc();
 		}

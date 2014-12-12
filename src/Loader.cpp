@@ -5,21 +5,14 @@ Loader::Loader()
 	
 }
 
-
 SceneGraph* Loader::loadSceneGraphFromFile(std::wstring pathw, MaterialManager* manager)
 {
 	Assimp::Importer* importer = new Assimp::Importer;
 
-	//TOTO do nejakeho globalu, resp. top klasy
-	//convert wstring path to string
-	typedef std::codecvt_utf8<wchar_t> convert_type;
-	std::wstring_convert<convert_type, wchar_t> converter;
-
-	//use converter (.to_bytes: wstr->str, .from_bytes: str->wstr)
-	std::string path = converter.to_bytes(pathw);
+	std::string path = wstringToString(pathw);
 
 	//Load scene
-	const aiScene* scene = importer->ReadFile(path, 
+	const aiScene* scene = importer->ReadFile(	path, 
 												aiProcess_MakeLeftHanded |
 												aiProcess_RemoveRedundantMaterials |
 												aiProcess_JoinIdenticalVertices |
@@ -114,7 +107,7 @@ Node* Loader::_processHierarchyRecursive(const aiScene* scene, std::vector< std:
 	return gn;
 }
 
-bool  Loader::_processMeshes(const aiMesh** meshes, const unsigned int count)
+bool  Loader::_processMeshes(aiMesh** const meshes, const unsigned int count)
 {
 	if (meshes == NULL || count == 0)
 		return false;
@@ -141,7 +134,8 @@ bool  Loader::_processMeshes(const aiMesh** meshes, const unsigned int count)
 
 		if (positions->data == NULL)
 		{
-			//DO SOME ERROR CHECK
+			ErrorMessage(L"Data allocation failed!");
+			return false;
 		}
 
 		data->addBufferToMesh(positions, RawMesh::AttributeType::POSITIONS);
@@ -189,7 +183,8 @@ bool  Loader::_processMeshes(const aiMesh** meshes, const unsigned int count)
 
 			if (texcoords->data == NULL)
 			{
-				//DO SOME ERROR CHECK
+				ErrorMessage(L"Data allocation failed!");
+				return false;
 			}
 
 			data->addBufferToMesh(texcoords, RawMesh::AttributeType::TEXCOORDS);
@@ -208,7 +203,8 @@ bool  Loader::_processMeshes(const aiMesh** meshes, const unsigned int count)
 
 			if (normals->data == NULL)
 			{
-				//DO SOME ERROR CHECK
+				ErrorMessage(L"Data allocation failed!");
+				return false;
 			}
 
 			data->addBufferToMesh(normals, RawMesh::AttributeType::NORMALS);
@@ -228,7 +224,8 @@ bool  Loader::_processMeshes(const aiMesh** meshes, const unsigned int count)
 
 			if (tangents->data == NULL)
 			{
-				//DO SOME ERROR CHECK
+				ErrorMessage(L"Data allocation failed!");
+				return false;
 			}
 
 			data->addBufferToMesh(tangents, RawMesh::AttributeType::TANGENTS);
@@ -244,7 +241,8 @@ bool  Loader::_processMeshes(const aiMesh** meshes, const unsigned int count)
 
 			if (bitangents->data == NULL)
 			{
-				//DO SOME ERROR CHECK
+				ErrorMessage(L"Data allocation failed!");
+				return false;
 			}
 
 			data->addBufferToMesh(bitangents, RawMesh::AttributeType::BITANGENTS);
@@ -263,7 +261,8 @@ bool  Loader::_processMeshes(const aiMesh** meshes, const unsigned int count)
 
 			if (colors->data == NULL)
 			{
-				//DO SOME ERROR CHECK
+				ErrorMessage(L"Data allocation failed!");
+				return false;
 			}
 
 			data->addBufferToMesh(colors, RawMesh::AttributeType::COLOR);
@@ -273,7 +272,7 @@ bool  Loader::_processMeshes(const aiMesh** meshes, const unsigned int count)
 	return true;
 }
 
-bool Loader::_processMaterialsAndRawTextures(const aiMaterial** materials, unsigned int numMaterials, bool loadTextures, MaterialManager* manager)
+bool Loader::_processMaterialsAndRawTextures(aiMaterial** const materials, unsigned int numMaterials, bool loadTextures, MaterialManager* manager)
 {
 	if (materials == nullptr || manager == nullptr)
 	{
@@ -291,10 +290,7 @@ bool Loader::_processMaterialsAndRawTextures(const aiMaterial** materials, unsig
 		aiString name;
 		materials[i]->Get(AI_MATKEY_NAME, name);
 
-		typedef std::codecvt_utf8<wchar_t> convert_type;
-		std::wstring_convert<convert_type, wchar_t> converter;
-
-		material->setName(converter.from_bytes(name.C_Str()));
+		material->setName(stringToWstring(name.C_Str()));
 
 		//Ambient color
 		aiColor3D color;
@@ -347,7 +343,7 @@ bool Loader::_processMaterialsAndRawTextures(const aiMaterial** materials, unsig
 			if (ilGetInteger(IL_VERSION_NUM) < IL_VERSION)
 			{
 				//Wrong DevIL version
-				ErrorMessage(L"Wrong DevIL version!\n", Error::Severity::ERROR);
+				ErrorMessage(L"Wrong DevIL version!", Error::Severity::ERROR);
 				return false;
 			}
 
@@ -355,12 +351,12 @@ bool Loader::_processMaterialsAndRawTextures(const aiMaterial** materials, unsig
 
 			const std::pair<aiTextureType, RawTexture2D::TextureType> textureTypes[] = 
 			{	
-				{ aiTextureType_AMBIENT, RawTexture2D::TextureType::Ambient },
-				{ aiTextureType_DIFFUSE, RawTexture2D::TextureType::Diffuse },
-				{ aiTextureType_SPECULAR, RawTexture2D::TextureType::Specular },
-				{ aiTextureType_EMISSIVE, RawTexture2D::TextureType::Emissive },
-				{ aiTextureType_NORMALS, RawTexture2D::TextureType::Normal }
-				{ aiTextureType_DISPLACEMENT, RawTexture2D::TextureType::Displacement }
+				{ aiTextureType_AMBIENT,		RawTexture2D::TextureType::Ambient },
+				{ aiTextureType_DIFFUSE,		RawTexture2D::TextureType::Diffuse },
+				{ aiTextureType_SPECULAR,		RawTexture2D::TextureType::Specular },
+				{ aiTextureType_EMISSIVE,		RawTexture2D::TextureType::Emissive },
+				{ aiTextureType_NORMALS,		RawTexture2D::TextureType::Normal },
+				{ aiTextureType_DISPLACEMENT,	RawTexture2D::TextureType::Displacement }
 			};
 
 			const unsigned int textureTypesCount = sizeof(textureTypes) / sizeof(aiTextureType);
@@ -381,11 +377,7 @@ bool Loader::_processMaterialsAndRawTextures(const aiMaterial** materials, unsig
 					aiString path;
 					materials[i]->GetTexture(textureTypes[n].first, j, &path);
 
-					//vyhodit do globalu
-					typedef std::codecvt_utf8<wchar_t> convert_type;
-					std::wstring_convert<convert_type, wchar_t> converter;
-
-					bool success = ilLoadImage(converter.from_bytes(name.C_Str()).c_str());
+					bool success = static_cast<bool>(ilLoadImage( stringToWstring( path.C_Str() ).c_str() ) );
 
 					if (!success)
 					{
@@ -394,7 +386,7 @@ bool Loader::_processMaterialsAndRawTextures(const aiMaterial** materials, unsig
 					}
 
 					//Get name (=path)
-					texture->name = converter.from_bytes(name.C_Str());
+					texture->name = stringToWstring(name.C_Str());
 
 					//Get dimensions
 					texture->width = ilGetInteger(IL_IMAGE_WIDTH);

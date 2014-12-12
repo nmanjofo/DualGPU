@@ -2,6 +2,8 @@
 
 #include "RawTypes.hpp"
 
+#include <string>
+
 namespace RawTexture2D
 {
 	enum class TextureType
