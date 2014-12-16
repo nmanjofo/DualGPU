@@ -188,6 +188,7 @@
     <ClInclude Include="..\src\ResourceManager.hpp" />
     <ClInclude Include="..\src\ShaderCompiler.h" />
     <ClInclude Include="..\src\SlaveGPUMain.h" />
+    <ClInclude Include="..\src\Thread.hpp" />
     <ClInclude Include="..\src\ThreadsDefines.h" />
     <ClInclude Include="..\src\Visitor.hpp" />
     <ClInclude Include="..\src\WindowManager.h" />
@@ -213,6 +214,7 @@
     <ClCompile Include="..\src\ResourceManager.cpp" />
     <ClCompile Include="..\src\ShaderCompiler.cpp" />
     <ClCompile Include="..\src\SlaveGPUMain.cpp" />
+    <ClCompile Include="..\src\Thread.cpp" />
     <ClCompile Include="..\src\Visitor.cpp" />
     <ClCompile Include="..\src\WindowManager.cpp" />
   </ItemGroup>
