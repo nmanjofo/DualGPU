@@ -2,7 +2,12 @@
 
 #include <Windows.h>
 
-class WindowManager
+#include "Thread.hpp"
+#include "Error.hpp"
+
+//Threaded window manager
+//
+class WindowManager : public Thread, public Error
 {
 public:
 	WindowManager();
