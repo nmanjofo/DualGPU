@@ -7,17 +7,13 @@
 #include <iostream>
 #include <vector>
 
-#include "globals.h"
 #include "ShaderCompiler.h"
 #include "Camera.h"
 #include "KMInputSingleton.h"
 
 
 #include <IL\il.h>
-/*
-#include <cuda.h>
-#include <cuda_runtime.h>
-#include <cudaD3D11.h>*/
+
 
 //#define USE_MAP
 #define USE_PERLIN
@@ -25,7 +21,6 @@
 #define USE_MULTIGPU
 
 #ifdef USE_MULTIGPU
-#include "SlaveGPUMain.h"
 
 //Slave GPU Thread handle and ID
 HANDLE                    g_hSlaveThread;

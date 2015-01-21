@@ -1,12 +1,14 @@
-#include "KMInputSingleton.h"
+#include "KMInput.hpp"
 
-bool KMInputSingleton::_valid = false;
-enum KMInputSingleton::KMInputMode              KMInputSingleton::_mode = KMInputSingleton::KMInputMode::KMINPUT_KEYBOARD_MODE_TYPEMATIC;
-KMInputSingleton::KMInputMessage                KMInputSingleton::_msg;
-std::set<enum Keys>                             KMInputSingleton::_keySet;
-std::map<enum Keys, bool>                       KMInputSingleton::_keyPressedMap;
-enum KMInputSingleton::KMInputMouseButtonState  KMInputSingleton::_mouseButtonState[3];
-HWND                                            KMInputSingleton::_h_WND;
+/*
+bool KMInput::_valid = false;
+enum KMInput::KMInputMode              KMInput::_mode = KMInput::KMInputMode::KMINPUT_KEYBOARD_MODE_TYPEMATIC;
+KMInput::KMInputMessage                KMInput::_msg;
+std::set<enum Keys>                    KMInput::_keySet;
+std::map<enum Keys, bool>              KMInput::_keyPressedMap;
+enum KMInput::KMInputMouseButtonState  KMInput::_mouseButtonState[3];
+HWND                                   KMInput::_h_WND;
+*/
 std::string mapKeyToString(enum Keys key)
 {
     switch (key)
@@ -68,7 +70,7 @@ std::string mapKeyToString(enum Keys key)
     case Keys::X:               return std::string("X");
     case Keys::Y:               return std::string("Y");
     case Keys::Z:               return std::string("Z");
-    case Keys::WIN:             return std::string("Windows Key");
+    case Keys::WIN:             return std::string("WIN Key");
     case Keys::APPS:            return std::string("Apps");
     case Keys::NUMPAD_0:        return std::string("NUMPAD 0");
     case Keys::NUMPAD_1:        return std::string("NUMPAD 1");
@@ -122,7 +124,7 @@ std::string mapKeyToString(enum Keys key)
     }
 }
 
-const KMInputSingleton::KMInputMessage* KMInputSingleton::processInputMessage(LPARAM lParam)
+const KMInput::KMInputMessage* KMInput::processInputMessage(LPARAM lParam)
 {
     if (!_valid)
         return NULL;
@@ -399,14 +401,21 @@ const KMInputSingleton::KMInputMessage* KMInputSingleton::processInputMessage(LP
         return NULL;
 }
 
-KMInputSingleton::KMInputSingleton()
+KMInput::KMInput(HWND _h_WND)
 {
-    //Get window handle
+    /*
+	//Get window handle
     HWND tmp;
     _h_WND = GetActiveWindow();
     
     while ((tmp = GetParent(_h_WND)) != NULL)
         _h_WND = tmp;
+	*/
+
+	//--ZHORA init
+	_valid = false;
+	_mode = KMInput::KMInputMode::KMINPUT_KEYBOARD_MODE_TYPEMATIC;
+	//--
 
     //Register raw input
     RAWINPUTDEVICE inputDevices[2];
@@ -426,6 +435,7 @@ KMInputSingleton::KMInputSingleton()
     if (RegisterRawInputDevices(inputDevices, 2, sizeof(inputDevices[0])) == FALSE)
     {
         _valid = false;
+		return;
     }
 
     //Initialize key set, push all values except for UNKNOWN
@@ -545,26 +555,27 @@ KMInputSingleton::KMInputSingleton()
     _valid = true;
 }
 
-KMInputSingleton* KMInputSingleton::getInstance()
+/*
+KMInput* KMInput::getInstance()
 {
-    static KMInputSingleton instance;
+    static KMInput instance;
     if (_valid)
         return &instance;
     else
         return NULL;
-}
+}*/
 
-void KMInputSingleton::setKeyboardMode(enum KMInputSingleton::KMInputMode mode)
+void KMInput::setKeyboardMode(enum KMInput::KMInputMode mode)
 {
     _mode = mode;
 }
 
-enum KMInputSingleton::KMInputMode KMInputSingleton::getMode()
+enum KMInput::KMInputMode KMInput::getMode()
 {
     return _mode;
 }
 
-void KMInputSingleton::resetMouseButtons()
+void KMInput::resetMouseButtons()
 {
     _mouseButtonState[0] = KMINPUT_MOUSE_BUTTON_UP;
     _mouseButtonState[1] = KMINPUT_MOUSE_BUTTON_UP;

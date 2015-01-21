@@ -7,7 +7,7 @@
 #include <map>
 
 /**
- * Class KMInputSingleton
+ * Class KMInput
  * Proceses WM_INPUT messages via raw input API
  * Based on: http://molecularmusings.wordpress.com/2011/09/05/properly-handling-keyboard-input/
  * Supports only english layout (sufficient for games)
@@ -130,7 +130,7 @@ enum Keys
 
 std::string mapKeyToString(enum Keys key);
 
-class KMInputSingleton
+class KMInput
 {
 public:
 
@@ -186,8 +186,10 @@ public:
         };
     };
 
+	KMInput(HWND hwnd);
+
     //Returns singleton instance
-    static KMInputSingleton * getInstance();
+    //static KMInput * getInstance();
 
     //Core function
     //Receives lparam from WM_INPUT to process
@@ -199,15 +201,15 @@ public:
 
     void resetMouseButtons();
 
-private:
-    KMInputSingleton();
+	bool isValid() { return _valid; }
 
-    static HWND                         _h_WND;
-    static bool                         _valid;
-    static KMInputMessage               _msg;
-    static enum KMInputMode             _mode;
-    static std::set<enum Keys>          _keySet;       //initialized with keys except for UNKNOWN
-    static std::map<enum Keys, bool>    _keyPressedMap;//used when in Single Down mode
+private:
+    /*static*/ HWND                         _h_WND;
+    /*static*/ bool                         _valid;
+    /*static*/ KMInputMessage               _msg;
+    /*static*/ enum KMInputMode             _mode;
+    /*static*/ std::set<enum Keys>          _keySet;       //initialized with keys except for UNKNOWN
+    /*static*/ std::map<enum Keys, bool>    _keyPressedMap;//used when in Single Down mode
     
-    static KMInputMouseButtonState      _mouseButtonState[3]; //keeps state of 3 mouse buttons
+    /*static*/ KMInputMouseButtonState      _mouseButtonState[3]; //keeps state of 3 mouse buttons
 };

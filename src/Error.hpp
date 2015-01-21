@@ -56,9 +56,8 @@ public:
 
 protected:
 	static bool				_isWriteToConsoleEnabled[SEVERITY_ENUM_SIZE];
-	static bool				_isLogfileEnabled[SEVERITY_ENUM_SIZE];
+	static bool				_isLogFileEnabled[SEVERITY_ENUM_SIZE];
 
 	static std::wofstream	_logFile;
-
 	static std::wostream*	_streams[SEVERITY_ENUM_SIZE];
 };

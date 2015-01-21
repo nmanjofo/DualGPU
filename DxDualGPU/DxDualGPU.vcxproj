@@ -171,12 +171,11 @@
     <ClInclude Include="..\src\Camera.h" />
     <ClInclude Include="..\src\Drawable.hpp" />
     <ClInclude Include="..\src\Error.hpp" />
-    <ClInclude Include="..\src\globals.h" />
     <ClInclude Include="..\src\LeafNode.hpp" />
     <ClInclude Include="..\src\GraphNode.hpp" />
     <ClInclude Include="..\src\HRTimer.h" />
     <ClInclude Include="..\src\IndirectIndexedDrawable.hpp" />
-    <ClInclude Include="..\src\KMInputSingleton.h" />
+    <ClInclude Include="..\src\KMInput.hpp" />
     <ClInclude Include="..\src\Loader.hpp" />
     <ClInclude Include="..\src\RawMaterial.hpp" />
     <ClInclude Include="..\src\MaterialManager.hpp" />
@@ -187,11 +186,11 @@
     <ClInclude Include="..\src\SceneGraph.hpp" />
     <ClInclude Include="..\src\ResourceManager.hpp" />
     <ClInclude Include="..\src\ShaderCompiler.h" />
-    <ClInclude Include="..\src\SlaveGPUMain.h" />
     <ClInclude Include="..\src\Thread.hpp" />
     <ClInclude Include="..\src\ThreadsDefines.h" />
     <ClInclude Include="..\src\Visitor.hpp" />
-    <ClInclude Include="..\src\WindowManager.h" />
+    <ClInclude Include="..\src\WindowHandle.hpp" />
+    <ClInclude Include="..\src\WindowManager.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Animation.cpp" />
@@ -199,11 +198,10 @@
     <ClCompile Include="..\src\Camera.cpp" />
     <ClCompile Include="..\src\Drawable.cpp" />
     <ClCompile Include="..\src\Error.cpp" />
-    <ClCompile Include="..\src\globals.cpp" />
     <ClCompile Include="..\src\LeafNode.cpp" />
     <ClCompile Include="..\src\GraphNode.cpp" />
     <ClCompile Include="..\src\IndirectIndexedDrawable.cpp" />
-    <ClCompile Include="..\src\KMInputSingleton.cpp" />
+    <ClCompile Include="..\src\KMInput.cpp" />
     <ClCompile Include="..\src\Loader.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\RawMaterial.cpp" />
@@ -213,9 +211,9 @@
     <ClCompile Include="..\src\SceneGraph.cpp" />
     <ClCompile Include="..\src\ResourceManager.cpp" />
     <ClCompile Include="..\src\ShaderCompiler.cpp" />
-    <ClCompile Include="..\src\SlaveGPUMain.cpp" />
     <ClCompile Include="..\src\Thread.cpp" />
     <ClCompile Include="..\src\Visitor.cpp" />
+    <ClCompile Include="..\src\WindowHandle.cpp" />
     <ClCompile Include="..\src\WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>

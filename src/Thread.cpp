@@ -2,10 +2,17 @@
 
 std::map< std::thread::id, std::pair<std::mutex, std::queue<ThreadMessage> > > Thread::_messageQueues;
 
-Thread::Thread()
+Thread::Thread(std::thread::id master)
 {
 	_isRunning = false;
+	_masterThreadID = master;
 }
+
+Thread::~Thread()
+{
+	
+}
+
 
 void Thread::sendMessage(std::thread::id threadID, ThreadMessage msg)
 {

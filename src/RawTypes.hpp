@@ -1,5 +1,7 @@
 #pragma once
 
+//TODO prerobit na presne velkosti
+
 enum class ElementDataType
 {
 	FLOAT,
