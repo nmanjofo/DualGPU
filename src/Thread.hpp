@@ -31,7 +31,7 @@ typedef struct _ThreadMessage
 class Thread
 {
 public:
-	Thread(std::thread::id parentThread);
+	Thread();
 	~Thread();
 
 	//Pushes a message to threads queue
@@ -74,10 +74,10 @@ protected:
 	//Thread identifier
 	std::thread			_thread;
 	std::thread::id		_threadID;
-	std::thread::id		_masterThreadID;
 	bool				_isRunning;
 
 	//Global message queues for each constructed thread
 	//Each thread registers itself in this queue
+	//Isto bude?
 	static std::map< std::thread::id, std::pair<std::mutex, std::queue<ThreadMessage> > > _messageQueues;
 };

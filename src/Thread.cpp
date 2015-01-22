@@ -2,10 +2,9 @@
 
 std::map< std::thread::id, std::pair<std::mutex, std::queue<ThreadMessage> > > Thread::_messageQueues;
 
-Thread::Thread(std::thread::id master)
+Thread::Thread()
 {
 	_isRunning = false;
-	_masterThreadID = master;
 }
 
 Thread::~Thread()

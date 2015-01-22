@@ -166,15 +166,16 @@
   <ItemGroup>
     <ClInclude Include="..\src\AlignedAllocator.hpp" />
     <ClInclude Include="..\src\Animation.hpp" />
+    <ClInclude Include="..\src\Application .hpp" />
     <ClInclude Include="..\src\BitOperations.h" />
     <ClInclude Include="..\src\BoundingVolume.hpp" />
     <ClInclude Include="..\src\Camera.h" />
+    <ClInclude Include="..\src\CommnadLineParser.hpp" />
     <ClInclude Include="..\src\Drawable.hpp" />
     <ClInclude Include="..\src\Error.hpp" />
     <ClInclude Include="..\src\LeafNode.hpp" />
     <ClInclude Include="..\src\GraphNode.hpp" />
     <ClInclude Include="..\src\HRTimer.h" />
-    <ClInclude Include="..\src\IndirectIndexedDrawable.hpp" />
     <ClInclude Include="..\src\KMInput.hpp" />
     <ClInclude Include="..\src\Loader.hpp" />
     <ClInclude Include="..\src\RawMaterial.hpp" />
@@ -194,13 +195,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Animation.cpp" />
+    <ClCompile Include="..\src\Application.cpp" />
     <ClCompile Include="..\src\BoundingVolume.cpp" />
     <ClCompile Include="..\src\Camera.cpp" />
+    <ClCompile Include="..\src\CommnadLineParser.cpp" />
     <ClCompile Include="..\src\Drawable.cpp" />
     <ClCompile Include="..\src\Error.cpp" />
     <ClCompile Include="..\src\LeafNode.cpp" />
     <ClCompile Include="..\src\GraphNode.cpp" />
-    <ClCompile Include="..\src\IndirectIndexedDrawable.cpp" />
     <ClCompile Include="..\src\KMInput.cpp" />
     <ClCompile Include="..\src\Loader.cpp" />
     <ClCompile Include="..\src\main.cpp" />

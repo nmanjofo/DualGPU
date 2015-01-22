@@ -8,7 +8,7 @@
 
 /**
  * Class KMInput
- * Proceses WM_INPUT messages via raw input API
+ * Proceses Windows WM_INPUT messages via Raw Input API
  * Based on: http://molecularmusings.wordpress.com/2011/09/05/properly-handling-keyboard-input/
  * Supports only english layout (sufficient for games)
  * Known Bugs:

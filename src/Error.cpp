@@ -1,7 +1,7 @@
 #include "Error.hpp"
 
 std::wofstream Error::_logFile;
-bool Error::_isLogfileEnabled[SEVERITY_ENUM_SIZE] = { false, false, false };
+bool Error::_isLogFileEnabled[SEVERITY_ENUM_SIZE] = { false, false, false };
 bool Error::_isWriteToConsoleEnabled[SEVERITY_ENUM_SIZE] = { true, true, true };
 std::wostream* Error::_streams[3] = { &std::wcerr, &std::wcerr, &std::wcerr };
 
@@ -20,7 +20,7 @@ void Error::__ErrorMessage(const std::wstring msg, const char* functionName, uns
 	}
 
 	//Write to file
-	if (_isLogfileEnabled[static_cast<unsigned int>(severity)])
+	if (_isLogFileEnabled[static_cast<unsigned int>(severity)])
 	{
 		_logFile << wstr.str();
 	}
