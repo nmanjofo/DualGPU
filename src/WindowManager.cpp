@@ -28,9 +28,30 @@ WindowManager::~WindowManager()
 }
 
 //Windows message callback function
-//Pushes messages into msg queues
 LRESULT CALLBACK WindowManager::_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	static WindowManager* manager = nullptr;
+
+	if (message == WM_NCCREATE)
+	{
+		//Get managet pointer from lpCreateParams
+		manager = (WindowManager*)((LPCREATESTRUCT)lParam)->lpCreateParams;
+
+		//Set Window User data to Window Manager Pointer
+		//May by used later
+		SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)manager);
+
+		return DefWindowProc(hWnd, message, wParam, lParam);
+	}
+
+	return manager->processMessage(hWnd, message, wParam, lParam);
+}
+
+LRESULT WindowManager::processMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	Callback<WindowManager> clb;
+	clb.bind(&WindowManager::bla, this);
+
 	PAINTSTRUCT ps;
 	HDC hdc;
 
@@ -142,7 +163,7 @@ bool WindowManager::createWindow(unsigned int width, unsigned int height, const 
 		WNDCLASSEX wcex;
 		wcex.cbSize = sizeof(WNDCLASSEX);
 		wcex.style = CS_HREDRAW | CS_VREDRAW;
-		wcex.lpfnWndProc = (WNDPROC)(this->_WndProc);
+		wcex.lpfnWndProc = (WNDPROC)(WindowManager::_WndProc);
 		wcex.cbClsExtra = 0;
 		wcex.cbWndExtra = 0;
 		wcex.hInstance = programInstance;
@@ -173,7 +194,7 @@ bool WindowManager::createWindow(unsigned int width, unsigned int height, const 
 			nullptr,
 			nullptr,
 			programInstance,
-			nullptr);
+			(LPVOID)this); //pass myself to the msg loop function, so it can interact with this object
 
 		if (!hWND)
 		{
@@ -248,7 +269,7 @@ void WindowManager::threadMain(void* arguments)
 		//Checking flags
 	}
 
-	//Calls quitting message callback, if it is from window
+	//Calls quitting message CALLBACK, if it is from window
 	if (quitByWindow)
 	{
 

@@ -6,6 +6,8 @@
 #include "KMInput.hpp"
 
 
+
+
 //Threaded window manager
 class WindowManager : public Thread, public Error
 {
@@ -40,6 +42,7 @@ public:
 
 	//Sets keys, which will be accepted for input
 
+	void bla(void* str);
 
 	//Resets key settings, calls back all keys
 	void acceptAllKeys();
@@ -58,8 +61,12 @@ public:
 	bool isWindowActive();
 
 protected:
-	LRESULT CALLBACK _WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-
+#ifdef _WIN64
+	static LRESULT CALLBACK _WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+public:	
+	LRESULT processMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+protected:
+#endif
 	//Members
 	WindowHandle*			_handle;
 	bool					_isValid;
@@ -74,4 +81,27 @@ protected:
 	bool					_isStateChangeRequested;
 
 	KMInput*				_km;
+};
+
+#include <functional>
+template <class T> class Callback
+{
+public:
+	void bind(std::function<void(void*)> &f)
+	{
+		func = std::bind(f, std::placeholders::_1);
+	}
+	
+	void bind(void(T::*function)(void*), T* instance)
+	{
+		func = std::bind(function, instance, std::placeholders::_1);
+	}
+	
+	void call(void* arg)
+	{
+		func(arg);
+	}
+
+private:
+	std::function<void(void*)> func;
 };

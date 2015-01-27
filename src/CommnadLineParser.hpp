@@ -2,5 +2,8 @@
 
 class CommandLineParser
 {
+public:
+
+protected:
 
 };

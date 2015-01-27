@@ -21,7 +21,7 @@ MaterialManager* MaterialManager::getMaterialManager()
 unsigned int MaterialManager::addMaterial(RawMaterial* material)
 {
 	_materials[_numStoredMaterials] = material;
-	++_numStoredMaterials;
+	return _numStoredMaterials++;
 }
 
 const RawMaterial* MaterialManager::getMaterialByIndex(unsigned int index) const
