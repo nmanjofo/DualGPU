@@ -1,5 +1,7 @@
 # Moje
-/bin/
+/bin/*.ilk
+/bin/*.pdb
+/bin/*.exe
 /DxDualGPU/Debug
 /DxDualGPU/Release
 
