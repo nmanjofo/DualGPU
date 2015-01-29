@@ -26,7 +26,7 @@ public:
 		return _isValid;
 	}
 
-	virtual void draw(ID3D11DeviceContext* context);
+	//virtual void draw(ID3D11DeviceContext* context);
 
 
 protected:

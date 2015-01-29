@@ -5,6 +5,7 @@
 #include <queue>
 #include <map>
 #include <chrono>
+#include <functional>
 
 //Message Type
 enum class MessageType
@@ -65,6 +66,7 @@ protected:
 	//Makes the thread run
 	//Returns thread ID
 	//Non-blocking (obviously)
+	//TODO - isto vracat IDcko?
 	std::thread::id run(void* arguments);
 
 	//Sleeps for T miliseconds

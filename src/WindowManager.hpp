@@ -4,9 +4,25 @@
 #include "Error.hpp"
 #include "WindowHandle.hpp"
 #include "KMInput.hpp"
+#include "Callback.hpp"
 
+//Structs for messages
+//Used in callbacks as arguments
+//Callbacks void* must be casted into respective type
+typedef struct _systemMsg
+{
 
+} SystemMessage;
 
+typedef struct _kMsg
+{
+
+} KeyboardMessage;
+
+typedef struct _mMsg
+{
+
+} MouseMessage;
 
 //Threaded window manager
 class WindowManager : public Thread, public Error
@@ -22,7 +38,7 @@ public:
 	WindowManager();
 	~WindowManager();
 
-	bool createWindow(unsigned int width, unsigned int height, const wchar_t* className, const wchar_t* title, unsigned int flags);
+	bool createWindow(unsigned int width, unsigned int height, const wchar_t* className, const wchar_t* title, unsigned int flags, Callback* onMouse, Callback* onKeyboard, Callback* onSystem);
 
 	bool isValid(){ return _isValid; }
 
@@ -42,7 +58,6 @@ public:
 
 	//Sets keys, which will be accepted for input
 
-	void bla(void* str);
 
 	//Resets key settings, calls back all keys
 	void acceptAllKeys();
@@ -76,6 +91,11 @@ protected:
 	unsigned int			_width;
 	unsigned int			_height;
 	
+	//Callbacks
+	Callback*				_onKeyboard;
+	Callback*				_onSystem;
+	Callback*				_onMouse;
+
 	//Any time there was a call from other object to move, resize, minimize
 	//this variable indicates that there is a request pending
 	bool					_isStateChangeRequested;
@@ -83,25 +103,3 @@ protected:
 	KMInput*				_km;
 };
 
-#include <functional>
-template <class T> class Callback
-{
-public:
-	void bind(std::function<void(void*)> &f)
-	{
-		func = std::bind(f, std::placeholders::_1);
-	}
-	
-	void bind(void(T::*function)(void*), T* instance)
-	{
-		func = std::bind(function, instance, std::placeholders::_1);
-	}
-	
-	void call(void* arg)
-	{
-		func(arg);
-	}
-
-private:
-	std::function<void(void*)> func;
-};

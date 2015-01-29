@@ -6,7 +6,7 @@
 #include "Loader.hpp"
 #include "Error.hpp"
 #include "CommnadLineParser.hpp"
-
+#include "Callback.hpp"
 
 class Application : public Error
 {
@@ -27,11 +27,12 @@ private:
 	
 	SceneGraph*			_sceneGraph;
 
-	//MessageQueue
-	//
-
 	//Callbacks for window manager
-	void onMouse();
-	void onKeyboard();
-	void onSystem();
+	void _onMouse(void* msg);
+	void _onKeyboard(void* msg);
+	void _onSystem(void* msg);
+
+	//Flags and queues, set by callbacks
+	bool				_isExit;
+
 };

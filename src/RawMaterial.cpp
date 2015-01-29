@@ -202,3 +202,8 @@ void  RawMaterial::setIsTwoSided(bool isTwoSided)
 {
 	_isTwoSided = isTwoSided;
 }
+
+const std::wstring&	RawMaterial::getName() const
+{
+	return _name;
+}

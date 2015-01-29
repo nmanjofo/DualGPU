@@ -169,6 +169,7 @@
     <ClInclude Include="..\src\Application .hpp" />
     <ClInclude Include="..\src\BitOperations.h" />
     <ClInclude Include="..\src\BoundingVolume.hpp" />
+    <ClInclude Include="..\src\Callback.hpp" />
     <ClInclude Include="..\src\Camera.h" />
     <ClInclude Include="..\src\CommnadLineParser.hpp" />
     <ClInclude Include="..\src\Drawable.hpp" />
@@ -210,6 +211,7 @@
     <ClCompile Include="..\src\MaterialManager.cpp" />
     <ClCompile Include="..\src\Node.cpp" />
     <ClCompile Include="..\src\RawMesh.cpp" />
+    <ClCompile Include="..\src\RawTypes.cpp" />
     <ClCompile Include="..\src\SceneGraph.cpp" />
     <ClCompile Include="..\src\ResourceManager.cpp" />
     <ClCompile Include="..\src\ShaderCompiler.cpp" />

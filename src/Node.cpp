@@ -1,5 +1,10 @@
 #include "Node.hpp"
 
+Node::Node()
+{
+
+}
+
 void Node::setName(std::wstring wstr)
 {
 	_name = wstr;
@@ -16,4 +21,10 @@ void Node::setName(std::string str)
 void Node::setName(const char* name)
 {
 	this->setName(std::string(name));
+}
+
+
+void Node::setParent(Node* parent)
+{
+	_parent = parent;
 }

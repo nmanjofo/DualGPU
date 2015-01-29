@@ -10,3 +10,8 @@ GraphNode::~GraphNode()
 {
 
 }
+
+void GraphNode::addChild(Node* node)
+{
+
+}

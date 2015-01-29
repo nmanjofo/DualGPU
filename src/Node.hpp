@@ -9,6 +9,7 @@
 class Node
 {
 public:
+	Node();
 	void setParent(Node* parent);
 	Node* getParent();
 
@@ -28,8 +29,6 @@ public:
 	std::wstring getName();
 
 protected:
-	Node();
-
 	std::wstring			_name;
 	BoundingVolume*			_boundingVolume;
 	Node*					_parent;

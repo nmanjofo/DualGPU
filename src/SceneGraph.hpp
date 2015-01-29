@@ -6,6 +6,8 @@
 
 
 #include <vector>
+
+//TODO - musi ist prec
 #include <DirectXMath.h>
 
 using namespace DirectX;

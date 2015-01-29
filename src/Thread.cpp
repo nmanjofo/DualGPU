@@ -12,7 +12,6 @@ Thread::~Thread()
 	
 }
 
-
 void Thread::sendMessage(std::thread::id threadID, ThreadMessage msg)
 {
 	_messageQueues[threadID].first.lock();
@@ -35,16 +34,13 @@ std::thread::id Thread::run(void* arguments)
 {
 	if (!_isRunning)
 	{
-		_thread = std::thread(&threadMain, arguments);
+		std::function<void(void*)> func = std::bind(&Thread::threadMain, this, std::placeholders::_1);
+		_thread = std::thread(func, arguments);
 		_isRunning = true;
 		_threadID = _thread.get_id();
-
-		//Create queue
-		_messageQueues[_threadID].first.unlock();
-
 	}
-	else
-		return _threadID;
+	
+	return _threadID;
 }
 
 ThreadMessage Thread::getMessage()

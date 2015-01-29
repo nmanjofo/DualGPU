@@ -34,7 +34,7 @@ LRESULT CALLBACK WindowManager::_WndProc(HWND hWnd, UINT message, WPARAM wParam,
 
 	if (message == WM_NCCREATE)
 	{
-		//Get managet pointer from lpCreateParams
+		//Get manager pointer from lpCreateParams
 		manager = (WindowManager*)((LPCREATESTRUCT)lParam)->lpCreateParams;
 
 		//Set Window User data to Window Manager Pointer
@@ -49,9 +49,6 @@ LRESULT CALLBACK WindowManager::_WndProc(HWND hWnd, UINT message, WPARAM wParam,
 
 LRESULT WindowManager::processMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	Callback<WindowManager> clb;
-	clb.bind(&WindowManager::bla, this);
-
 	PAINTSTRUCT ps;
 	HDC hdc;
 
@@ -94,12 +91,18 @@ LRESULT WindowManager::processMessage(HWND hWnd, UINT message, WPARAM wParam, LP
 		{
 			if (msg->messageType == KMInput::KMINPUT_MESSAGE_KEYBOARD)
 			{
+				static KeyboardMessage kbMSG;
 				std::cout << "klavesa\n";
+
+				_onKeyboard->call(&kbMSG);
 			}
 			//Can be restored via clicking - this click must be ignored
 			else if (msg->messageType == KMInput::KMINPUT_MESSAGE_MOUSE)
 			{
+				static MouseMessage mouseMSG;
+				
 				std::cout << "mys\n";
+				_onMouse->call(&mouseMSG);
 			}
 		}
 		break;
@@ -152,10 +155,20 @@ void WindowManager::setWindowPosition(unsigned int x, unsigned int y)
 	SetWindowPos((HWND)(*((HWND*)_handle->getRawHandle())), nullptr, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 }
 
-bool WindowManager::createWindow(unsigned int width, unsigned int height, const wchar_t* className, const wchar_t* title, unsigned int flags)
+bool WindowManager::createWindow(unsigned int width, unsigned int height, const wchar_t* className, const wchar_t* title, unsigned int flags, Callback* onMouse, Callback* onKeyboard, Callback* onSystem)
 {
 	if (_handle == nullptr)
 	{
+		if (onMouse == nullptr || onKeyboard == nullptr || onSystem == nullptr)
+		{
+			ErrorMessage("One of the callbacks is invalid");
+			return false;
+		}
+
+		_onKeyboard = onKeyboard;
+		_onMouse = onMouse;
+		_onSystem = onSystem;
+
 		//Get program instance
 		HINSTANCE programInstance = GetModuleHandle(nullptr);
 
