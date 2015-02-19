@@ -69,14 +69,15 @@ protected:
 	//TODO - isto vracat IDcko?
 	std::thread::id run(void* arguments);
 
-	//Sleeps for T miliseconds
-	void sleep(std::chrono::milliseconds T);
+	bool isTimeToDie() { return _isTimeToDie; }
 
 protected:
 	//Thread identifier
 	std::thread			_thread;
 	std::thread::id		_threadID;
 	bool				_isRunning;
+	
+	bool				_isTimeToDie;
 
 	//Global message queues for each constructed thread
 	//Each thread registers itself in this queue

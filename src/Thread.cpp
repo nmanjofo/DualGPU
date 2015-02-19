@@ -5,6 +5,7 @@ std::map< std::thread::id, std::pair<std::mutex, std::queue<ThreadMessage> > > T
 Thread::Thread()
 {
 	_isRunning = false;
+	_isTimeToDie = false;
 }
 
 Thread::~Thread()
@@ -26,7 +27,8 @@ void Thread::sendThreadMessage(ThreadMessage msg)
 
 void Thread::kill()
 {
-	sendThreadMessage({ MessageType::TERMINATE, nullptr });
+	//sendThreadMessage({ MessageType::TERMINATE, nullptr });
+	_isTimeToDie = true;
 	_thread.join();
 }
 

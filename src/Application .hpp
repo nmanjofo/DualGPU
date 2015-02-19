@@ -32,6 +32,8 @@ private:
 	void _onKeyboard(void* msg);
 	void _onSystem(void* msg);
 
+	void Clean();
+
 	//Flags and queues, set by callbacks
 	bool				_isExit;
 

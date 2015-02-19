@@ -1,8 +1,6 @@
 #pragma once
 
 #include <Windows.h>
-#include <iostream>
-#include <iomanip>
 #include <set>
 #include <map>
 
@@ -14,8 +12,7 @@
  * Known Bugs:
  */
 
-//TODO - prerobit na enum class
-
+//TODO - zrusit pre Linux tie hodnoty
 enum Keys
 {
     BACKSPACE = VK_BACK,
@@ -204,7 +201,7 @@ public:
 	bool isValid() { return _valid; }
 
 private:
-    /*static*/ HWND                         _h_WND;
+    /*static*/ HWND                         _h_WND; //Zamenit za Handle
     /*static*/ bool                         _valid;
     /*static*/ KMInputMessage               _msg;
     /*static*/ enum KMInputMode             _mode;

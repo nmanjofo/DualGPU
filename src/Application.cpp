@@ -26,10 +26,38 @@ void Application::_onMouse(void* arg)
 
 }
 
-
+//Handles system messages
 void Application::_onSystem(void* arg)
 {
+	switch (((SystemMessage*)arg)->msg)
+	{
+	case SysMsg::KILLFOCUS:
+		std::cout << "Stracam focus\n";
+		break;
 
+	case SysMsg::SETFOCUS:
+		std::cout << "Dostavam focus\n";
+		break;
+
+	case SysMsg::MAXIMIZE:
+		std::cout << "Maximalizacia\n";
+		break;
+
+	case SysMsg::MINIMIZE:
+		std::cout << "Minimalizacia\n";
+		break;
+
+	case SysMsg::RESTORE:
+		std::cout << "Obnovenie\n";
+		break;
+
+	case SysMsg::QUIT:
+		_isExit = true;
+		break;
+
+	default:
+		break;
+	}
 }
 
 
@@ -59,8 +87,16 @@ bool Application::Run(int argc, char* argv[])
 	//Loop
 	while (!_isExit)
 	{
-
+		Sleep(100);
 	}
 
+	Clean();
+
 	return true;
+}
+
+void Application::Clean()
+{
+	if (_windowManager)
+		delete _windowManager;
 }
